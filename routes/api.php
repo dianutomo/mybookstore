@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AuthorController;
+
 
 
 /*
@@ -35,7 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin-only routes
     Route::middleware('CheckRole:admin')->group(function() {
         // Routes accessible only by admins (e.g., POST /books, PUT /books/{id}, DELETE /books/{id} )
-        // Bookstore API routes
+        // books API routes
         Route::resource('books', BookController::class)->except(['create', 'edit']);
+        // author API routes
+        Route::resource('authors', AuthorController::class)->except(['create', 'edit']);
     });
 });

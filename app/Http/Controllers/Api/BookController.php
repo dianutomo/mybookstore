@@ -13,7 +13,9 @@ class BookController extends Controller
      */
     public function index()
     {
-        return Book::all();
+        // return Book::all();
+        // Include author information in each book
+        return Book::with('author:id,name')->get();
     }
 
     /**
@@ -30,7 +32,7 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $book = Book::create($request->all()); // Create a new book
-        return response()->json($book, 201); // Return the book and 201 status code
+        return response()->json($book->load('author:id,name'), 201); // Return the book and 201 status code
     }
 
     /**
@@ -38,11 +40,11 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        $book = Book::find($id); // Find the book
+        $book = Book::with('author:name')->find($id); // Find the book
         if(!$book) {
             return response()->json(['message' => 'Book not found'], 404); // Return 404 if the book doesn't exist
         }
-        return $book; // Return the book
+        return response()->json($book); // Return the book
     }
 
     /**
@@ -63,7 +65,7 @@ class BookController extends Controller
             return response()->json(['message' => 'Book not found'], 404); // Return 404 if the book doesn't exist
         }
         $book->update($request->all()); // Update the book
-        return response()->json($book, 200); // Return the book and 200 status code
+        return response()->json($book->load('author:name'), 200); // Return the book and 200 status code
     }
 
     /**
