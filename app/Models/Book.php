@@ -10,10 +10,12 @@ class Book extends Model
     use HasFactory;
 
     protected $fillable = [
-        'author_id',
         'title',
         'isbn',
-        'price'
+        'price',
+        'author_id',
+        'stock'
+
     ];
 
     protected $hidden = ['author_id', 'created_at', 'updated_at'];

@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AuthorController;
-
-
+use App\Http\Controllers\Api\BorrowingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,5 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::resource('books', BookController::class)->except(['create', 'edit']);
         // author API routes
         Route::resource('authors', AuthorController::class)->except(['create', 'edit']);
+        Route::get('/borrowings', [BorrowingController::class, 'index']);
+        Route::get('/borrowings/{id}', [BorrowingController::class, 'show']);
+        Route::post('/borrowings', [BorrowingController::class, 'store']);
+        Route::post('/borrowings/{id}/return', [BorrowingController::class, 'returnBook']);
     });
 });
