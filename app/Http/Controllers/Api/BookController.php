@@ -11,11 +11,30 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // return Book::all();
-        // Include author information in each book
-        return Book::with('author:id,name')->get();
+        // Include author and category information in each book
+        // $books = Book::with(['author:id,name', 'category:id,name'])->get();
+        // return response()->json($books);
+        $query = Book::with(['author:id,name', 'category:id,name']);
+
+        // Check if search query is present
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('isbn', 'like', "%{$search}%")
+                ->orWhereHas('author', function ($authorQuery) use ($search) {
+                    $authorQuery->where('name', 'like', "%{$search}%");
+                })
+                ->orWhereHas('category', function ($categoryQuery) use ($search) {
+                    $categoryQuery->where('name', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        $books = $query->get();
+
+        return response()->json($books);
     }
 
     /**
@@ -32,7 +51,7 @@ class BookController extends Controller
     public function store(Request $request)
     {
         $book = Book::create($request->all()); // Create a new book
-        return response()->json($book->load('author:id,name'), 201); // Return the book and 201 status code
+        return response()->json($book->load(['author:id,name', 'category:id,name']), 201); // Return the book and 201 status code
     }
 
     /**
@@ -40,7 +59,7 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        $book = Book::with('author:id,name')->find($id); // Find the book
+        $book = Book::with(['author:id,name', 'category:id,name'])->find($id); // Find the book
         if(!$book) {
             return response()->json(['message' => 'Book not found'], 404); // Return 404 if the book doesn't exist
         }
@@ -65,7 +84,7 @@ class BookController extends Controller
             return response()->json(['message' => 'Book not found'], 404); // Return 404 if the book doesn't exist
         }
         $book->update($request->all()); // Update the book
-        return response()->json($book->load('author:id,name'), 200); // Return the book and 200 status code
+        return response()->json($book->load(['author:id,name', 'category:id,name']), 200); // Return the book and 200 status code
     }
 
     /**

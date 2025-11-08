@@ -14,14 +14,20 @@ class Book extends Model
         'isbn',
         'price',
         'author_id',
-        'stock'
-
+        'stock',
+        'category_id'
+        
     ];
 
-    protected $hidden = ['author_id', 'created_at', 'updated_at'];
+    protected $hidden = ['author_id', 'created_at', 'updated_at', 'category_id'];
 
     public function author()
     {
         return $this->belongsTo(Author::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

@@ -64,7 +64,7 @@ class AuthorController extends Controller
             return response()->json(['message' => 'Author not found'], 404); // Return 404 if author doesn't exist
         }
         $author->update($request->all()); // Update author
-        return response()->json($author, 200); // Return the book and 200 status code
+        return response()->json($author, 200); // Return author and 200 status code
     }
 
     /**
